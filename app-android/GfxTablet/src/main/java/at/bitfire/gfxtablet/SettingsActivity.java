@@ -1,5 +1,6 @@
 package at.bitfire.gfxtablet;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
 
@@ -15,7 +16,10 @@ public class SettingsActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        ActionBar actionBar = getActionBar();
+        if (null != actionBar) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         setContentView(R.layout.activity_settings);
     }

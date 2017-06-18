@@ -1,5 +1,6 @@
 package at.bitfire.gfxtablet;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -133,12 +134,13 @@ public class CanvasActivity extends Activity implements View.OnSystemUiVisibilit
 
         fullScreen = (visibility & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) != 0;
 
+        ActionBar actionBar = getActionBar();
         // show/hide action bar according to full-screen mode
         if (fullScreen) {
-            getActionBar().hide();
+            if (null != actionBar) actionBar.hide();
             Toast.makeText(CanvasActivity.this, "Press Back button to leave full-screen mode.", Toast.LENGTH_LONG).show();
         } else
-            getActionBar().show();
+            if (null != actionBar) actionBar.show();
     }
 
 
@@ -165,7 +167,7 @@ public class CanvasActivity extends Activity implements View.OnSystemUiVisibilit
     }
 
     public void clearTemplateImage(MenuItem item) {
-        preferences.edit().remove(SettingsActivity.KEY_TEMPLATE_IMAGE).commit();
+        preferences.edit().remove(SettingsActivity.KEY_TEMPLATE_IMAGE).apply();
         showTemplateImage();
     }
 
@@ -177,13 +179,16 @@ public class CanvasActivity extends Activity implements View.OnSystemUiVisibilit
             String[] filePathColumn = { MediaStore.Images.Media.DATA };
 
             Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+            if (null == cursor) {
+                return;
+            }
             try {
                 cursor.moveToFirst();
 
                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                 String picturePath = cursor.getString(columnIndex);
 
-                preferences.edit().putString(SettingsActivity.KEY_TEMPLATE_IMAGE, picturePath).commit();
+                preferences.edit().putString(SettingsActivity.KEY_TEMPLATE_IMAGE, picturePath).apply();
                 showTemplateImage();
             } finally {
                 cursor.close();
