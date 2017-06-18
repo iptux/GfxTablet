@@ -3,60 +3,57 @@ package at.bitfire.gfxtablet;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.concurrent.LinkedBlockingQueue;
-
-import at.bitfire.gfxtablet.NetEvent.Type;
-
-
 public class NetworkClient implements Runnable {
+	static {
+		System.loadLibrary("networkclient");
+	}
+
 	static final int GFXTABLET_PORT = 40118;
-	
-	final LinkedBlockingQueue<NetEvent> motionQueue = new LinkedBlockingQueue<>();
-	LinkedBlockingQueue<NetEvent> getQueue() { return motionQueue; }
-	
-	InetAddress destAddress;
+
+	String hostName;
 	final SharedPreferences preferences;
+	private long handle;
 
 	NetworkClient(SharedPreferences preferences) {
 		this.preferences = preferences;
+		handle = init();
 	}
 	
 	boolean reconfigureNetworking() {
-		try {
-			String hostName = preferences.getString(SettingsActivity.KEY_PREF_HOST, "unknown.invalid");
-			destAddress = InetAddress.getByName(hostName);
-		} catch (UnknownHostException e) {
-			destAddress = null;
-			return false;
-		}
-		return true;
+		hostName = preferences.getString(SettingsActivity.KEY_PREF_HOST, "unknown.invalid");
+		return setHost(handle, hostName, GFXTABLET_PORT);
+	}
+
+	void setSize(int x, int y) {
+		setSize(handle, x, y);
+	}
+
+	void putEvent(float x, float y, float pressure) {
+		// motion event
+		putEvent(handle, (byte) 0, x, y, pressure, 0, false);
+	}
+
+	void putEvent(float x, float y, float pressure, int button, boolean down) {
+		// button event
+		putEvent(handle, (byte) 1, x, y, pressure, button, down);
+	}
+
+	void close() {
+		close(handle);
+		handle = 0;
 	}
 	
 	@Override
 	public void run() {
-		try {
-			DatagramSocket socket = new DatagramSocket();
-			
-			while (true) {
-				NetEvent event = motionQueue.take();
-				
-				// graceful shutdown
-				if (event.type == Type.TYPE_DISCONNECT)
-					break;
-				
-				if (destAddress == null)		// no valid destination host
-					continue;
-			
-				byte[] data = event.toByteArray();
-				DatagramPacket pkt = new DatagramPacket(data, data.length, destAddress, GFXTABLET_PORT);
-				socket.send(pkt);
-			}
-		} catch (Exception e) {
-			Log.e("GfxTablet", "motionQueue failed: " + e.getMessage());
-		}
+		loop(handle);
+		close();
+		Log.d("GfxTablet", "NetworkClient thread exit");
 	}
+
+	native private long init();
+	native private void close(long handle);
+	native private void setSize(long handle, int x, int y);
+	native private boolean setHost(long handle, String host, int port);
+	native private void putEvent(long handle, byte type, float x, float y, float pressure, int button, boolean down);
+	native private void loop(long handle);
 }

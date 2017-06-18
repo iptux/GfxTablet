@@ -8,6 +8,10 @@ android {
         applicationId "at.bitfire.gfxtablet"
         minSdkVersion 14
         targetSdkVersion 22
+
+        ndk {
+            abiFilters 'armeabi', 'mips', 'x86'
+        }
     }
 
     signingConfigs {
@@ -24,6 +28,12 @@ android {
             minifyEnabled false
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+
+    externalNativeBuild {
+        ndkBuild {
+            path 'src/main/jni/Android.mk'
         }
     }
 }

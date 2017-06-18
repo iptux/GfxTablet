@@ -67,7 +67,7 @@ public class CanvasActivity extends Activity implements View.OnSystemUiVisibilit
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        netClient.getQueue().add(new NetEvent(NetEvent.Type.TYPE_DISCONNECT));
+        netClient.close();
     }
 
     @Override
@@ -218,7 +218,7 @@ public class CanvasActivity extends Activity implements View.OnSystemUiVisibilit
 
         protected void onPostExecute(Boolean success) {
             if (success)
-                Toast.makeText(CanvasActivity.this, "Touch events will be sent to " + netClient.destAddress.getHostAddress() + ":" + NetworkClient.GFXTABLET_PORT, Toast.LENGTH_LONG).show();
+                Toast.makeText(CanvasActivity.this, "Touch events will be sent to " + netClient.hostName + ":" + NetworkClient.GFXTABLET_PORT, Toast.LENGTH_LONG).show();
 
             findViewById(R.id.canvas_template).setVisibility(success ? View.VISIBLE : View.GONE);
             findViewById(R.id.canvas).setVisibility(success ? View.VISIBLE : View.GONE);
