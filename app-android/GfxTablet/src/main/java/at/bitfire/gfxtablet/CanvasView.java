@@ -91,7 +91,6 @@ public class CanvasView extends View implements SharedPreferences.OnSharedPrefer
 					float x = event.getX(ptr),
 						y = event.getY(ptr),
 						pressure = event.getPressure(ptr);
-					Log.v(TAG, String.format("Generic motion event logged: %f|%f, pressure %f", x, y, pressure));
 					switch (event.getActionMasked()) {
 					case MotionEvent.ACTION_HOVER_MOVE:
 						netClient.putEvent(x, y, pressure);
@@ -119,7 +118,6 @@ public class CanvasView extends View implements SharedPreferences.OnSharedPrefer
 					float x = event.getX(ptr),
 						y = event.getY(ptr),
 						pressure = event.getPressure(ptr);
-					Log.v(TAG, String.format("Touch event logged: action %d @ %f|%f (pressure %f)", event.getActionMasked(), x, y, pressure));
 					switch (event.getActionMasked()) {
 					case MotionEvent.ACTION_MOVE:
 						netClient.putEvent(x, y, pressure);
