@@ -53,7 +53,8 @@ void init_device(int fd)
 		die("error: ioctl UI_SETEVBIT ABS_PRESSURE");
 
 	memset(&uidev, 0, sizeof(uidev));
-	snprintf(uidev.name, UINPUT_MAX_NAME_SIZE, "Network Tablet");
+	// must add "pen" or "mouse" to make cursor visible
+	snprintf(uidev.name, UINPUT_MAX_NAME_SIZE, "GfxTablet pen");
 	uidev.id.bustype = BUS_VIRTUAL;
 	uidev.id.vendor  = 0x1;
 	uidev.id.product = 0x1;
