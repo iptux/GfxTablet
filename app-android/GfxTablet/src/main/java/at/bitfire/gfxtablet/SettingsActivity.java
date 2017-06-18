@@ -1,10 +1,9 @@
 package at.bitfire.gfxtablet;
 
+import android.app.Activity;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.AppCompatActivity;
 
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsActivity extends Activity {
     public static final String
 		KEY_PREF_HOST = "host_preference",
 		KEY_PREF_STYLUS_ONLY = "stylus_only_preference",
@@ -16,7 +15,7 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
 
         setContentView(R.layout.activity_settings);
     }

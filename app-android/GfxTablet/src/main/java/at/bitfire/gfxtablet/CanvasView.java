@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -115,7 +114,7 @@ public class CanvasView extends View implements SharedPreferences.OnSharedPrefer
 	}
 	
 	@Override
-	public boolean onTouchEvent(@NonNull MotionEvent event) {
+	public boolean onTouchEvent(MotionEvent event) {
 		if (isEnabled()) {
 			for (int ptr = 0; ptr < event.getPointerCount(); ptr++)
 				if (!acceptStylusOnly || (event.getToolType(ptr) == MotionEvent.TOOL_TYPE_STYLUS)) {
